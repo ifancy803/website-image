@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>IFANCY Personal Website</title>
+    <style>
+        /* 轮播图样式 */
+       .slider {
+            width: 60%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+       .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+       .slide {
+            min-width: 100%;
+        }
+
+        /* 导航条样式优化 */
+        nav {
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+            background-color: rgba(10, 10, 10, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            cursor: pointer;
+            margin: 0;
+        }
+
+        nav h1::after {
+            content: "Personal Portfolio";
+            display: block;
+            font-size: 0.6rem;
+            text-align: center;
+            background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        nav .right-section {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-right: 1.2rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        nav ul li a:hover {
+            color: #3b82f6;
+        }
+
+        nav ul ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: rgba(10, 10, 10, 0.9);
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 12rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        nav ul li:hover > ul {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        nav ul ul li {
+            margin: 0;
+        }
+
+        nav ul ul li a {
+            display: block;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+        }
+
+        #search-input {
+            background-color: rgba(20, 20, 20, 0.8);
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.375rem;
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 1.2rem;
+            transition: width 0.3s ease;
+            width: 120px;
+        }
+
+        #search-input:focus {
+            width: 200px;
+            outline: none;
+        }
+
+        /* 优化卡片样式 */
+       .bg-gray-800 {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: rgba(20, 20, 20, 0.8);
+        }
+
+       .bg-gray-800:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        /* 增加链接样式 */
+       .game-link {
+            color: #3b82f6;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+       .game-link:hover {
+            color: #2563eb;
+        }
+
+        /* 优化排版，添加间距 */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 轮播图导航按钮样式 */
+       .slider-nav {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+       .slider-nav button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+       .slider-nav button.active {
+            background-color: white;
+        }
+
+        /* 卡片样式 */
+       .custom-card {
+            background-color: rgba(10, 10, 10, 0.8);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+       .custom-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* 光效 */
+        body {
+            position: relative;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1), rgba(0, 0, 0, 1));
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0));
+            pointer-events: none;
+            z-index: -1;
+            animation: lightEffect 10s infinite linear;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: repeating-radial-gradient(circle at center, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0) 10%);
+            pointer-events: none;
+            z-index: -1;
+            animation: lightEffect2 20s infinite linear;
+        }
+
+        @keyframes lightEffect {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes lightEffect2 {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(-360deg);
+            }
+        }
+
+        /* 轮播图左右箭头按钮 */
+       .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+
+       .slider-arrow:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+       .slider-arrow-left {
+            left: 1rem;
+        }
+
+       .slider-arrow-right {
+            right: 1rem;
+        }
+
+        /* 艺术字和文字光效 */
+        nav h1 {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            cursor: pointer;
+        }
+
+        nav h1:hover {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+        }
+
+        /* 粒子效果 */
+       .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleMove linear infinite;
+        }
+
+        @keyframes particleMove {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* 文字排版优化 */
+        h2 {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #6366f1;
+        }
+
+        p,
+        ul {
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            line-height: 1.7;
+            color: #e5e7eb;
+        }
+
+        strong {
+            font-weight: bolder;
+            color: #3b82f6;
+        }
+
+        em {
+            font-style: italic;
+            color: #8b5cf6;
+        }
+
+        /* 个人荣誉奖项光效 */
+        #personal-awards h3 {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+            color: #8b5cf6; /* 更换个人荣誉下奖项的文字颜色 */
+        }
+
+        /* 日期颜色修改 */
+       .date {
+            color: #a0aec0;
+        }
+
+        /* 联系我部分排版优化 */
+        #contact-me ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        #contact-me li {
+            background-color: rgba(20, 20, 20, 0.8);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        #contact-me li:hover {
+            transform: scale(1.05);
+        }
+
+        /* 优化交互效果 */
+        a {
+            transition: all 0.3s ease;
+        }
+
+        button {
+            transition: all 0.3s ease;
+        }
+
+        input {
+            transition: all 0.3s ease;
+        }
+
+        /* 图片排版优化 */
+       .custom-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white font-sans">
+    <!-- 导航条 -->
+    <nav class="bg-black">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold" onclick="scrollToTop()">IFANCY 个人网站</h1>
+            <div class="right-section">
+                <input type="text" id="search-input" placeholder="搜索..." class="px-3 py-2 rounded-md bg-gray-800 text-white">
+                <ul class="flex space-x-4">
+                    <li class="relative group">
+                        <a href="#" class="hover:text-gray-400">关于我</a>
+                        <ul class="absolute left-0 top-full bg-black py-2 hidden group-hover:block">
+                            <li><a href="#personal-intro" class="block px-4 py-2 hover:bg-gray-800">个人简介</a></li>
+                            <li><a href="#education-background" class="block px-4 py-2 hover:bg-gray-800">教育背景</a></li>
+                            <li><a href="#personal-awards" class="block px-4 py-2 hover:bg-gray-800">个人荣誉</a></li>
+                            <li><a href="#contact-me" class="block px-4 py-2 hover:bg-gray-800">联系我</a></li>
+                        </ul>
+                    </li>
+                    <li class="relative group">
+                        <a href="#" class="hover:text-gray-400">游戏相关</a>
+                        <ul class="absolute left-0 top-full bg-black py-2 hidden group-hover:block">
+                            <li><a href="#game-projects" class="block px-4 py-2 hover:bg-gray-800">游戏开发作品</a></li>
+                            <li><a href="#personal-skills" class="block px-4 py-2 hover:bg-gray-800">个人技能</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#" class="hover:text-gray-400" onclick="scrollToTop()">主页</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- 轮播图嵌入卡片 -->
+    <div class="custom-card mx-auto w-3/4">
+        <div class="slider" onmouseenter="stopAutoSlide()" onmouseleave="startAutoSlide()">
+            <button class="slider-arrow slider-arrow-left" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="slides" id="slides">
+                <div class="slide">
+                    <img src="https://raw.githubusercontent.com/ifancy803/website-image/main/xL_Yel.png" alt="Slide 1" class="w-full h-auto">
+                </div>
+                <div class="slide">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/Light3.jpg?raw=true" alt="Slide 2" class="w-full h-auto">
+                </div>
+                <div class="slide">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/Knight.jpg?raw=true" alt="Slide 3" class="w-full h-auto">
+                </div>
+                <div class="slide">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/ToTheMoon.jpg?raw=true" alt="Slide 4" class="w-full h-auto">
+                </div>
+            </div>
+            <button class="slider-arrow slider-arrow-right" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="slider-nav" id="slider-nav"></div>
+        </div>
+    </div>
+    <!-- 内容区域 -->
+    <div class="container mx-auto py-8">
+        <!-- 个人简介 -->
+        <section id="personal-intro" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">个人简介</h2>
+            <p><strong>Hello，我是IFANCY。</strong><br>具有 2 年的 <em>Unity3D</em> 开发项目经验，具备优秀的理解能力、沟通能力和审美能力。<br>
+            熟练运用 <em>C#</em> 编程；熟练使用 <em>Unity</em> 的各类模块，如 <em>UGUI</em>、<em>PostProcessing</em>、<em>Rigidbody</em>、<em>Collider</em>、<em>XR</em> 等；<br>
+            熟练使用 <em>Unity</em> 的各种插件，如 <em>Dotween</em>、<em>UniWebView</em>、<em>TextAnimator</em> 等；<br>
+            熟练使用 <em>Animation</em>、<em>Animator</em> 动画系统；<br>
+            熟练使用 <em>Github</em> 等工具进行项目代码管理、多人协同管理；<br>
+            了解 <em>Shader</em> 基本应用。</p>
+        </section>
+        <!-- 教育背景 -->
+        <section id="education-background" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">教育背景</h2>
+            <div class="bg-gray-800 p-4 rounded-md">
+                <h3 class="text-xl font-bold mb-2">宁波大学科学技术学院</h3>
+                <p>信息工程学院 | <strong>计算机科学与技术</strong> | 本科</p>
+                <p class="date">2023 - 09 至 2027 - 06</p>
+            </div>
+        </section>
+        <!-- 个人荣誉 -->
+        <section id="personal-awards" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">个人荣誉</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/Light3.jpg?raw=true" alt="Award 1" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">TapTap年度大赏 聚光灯GameJam 最佳社区运营</h3>
+                    <a href="#" class="game-link">查看详情</a>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://raw.githubusercontent.com/ifancy803/website-image/main/xL_Yel.png" alt="Award 2" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">吉比特高校GameJam 优秀站点奖 - 成都站点奖</h3>
+                    <a href="#" class="game-link">查看详情</a>
+                </div>
+            </div>
+        </section>
+        <!-- 个人游戏开发作品介绍 -->
+        <section id="game-projects" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">个人游戏开发作品介绍</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 游戏《烛火之心》 -->
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/light2.jpg?raw=true" alt="Game Project 1" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">游戏《烛火之心》</h3>
+                    <p>Unity 客户端开发 | <span class="date">2024 - 10 至 2024 - 11</span></p>
+                    <ul class="list-disc list-inside mb-2">
+                        <li>负责功能：负责 <strong>UI 系统开发</strong>、搭建大世界场景及脚本逻辑、配置角色 3C 脚本、设计并搭建游戏开始菜单界面</li>
+                        <li>项目描述：TapTap 聚光灯游戏创作挑战项目。大世界为 2.5D 视角，其余部分主要为 2D 立绘场景。游戏玩法为地图探索搜刮 + 合成 + 模拟经营，主角需要在每一天出门进行 "冒险"，采集可以获得合成资源，战斗可以延长探索精力，移动需要消耗精力，消耗完毕后冒险结束。</li>
+                    </ul>
+                    <a href="#" class="game-link">点击进入项目</a>
+                </div>
+                <!-- 游戏《OOPS》 -->
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/OOPS.jpg?raw=true" alt="Game Project 2" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">游戏《OOPS》</h3>
+                    <p>Unity 客户端开发 | <span class="date">2025 - 01 至 2025 - 01</span></p>
+                    <ul class="list-disc list-inside mb-2">
+                        <li>负责功能：负责游戏核心玩法开发，使用 <em>Softbody</em> 插件模拟软体效果，基于 <em>Collider</em> 和 <em>Trigger</em> 开发内部解密机关，负责 <strong>UI 系统</strong>。</li>
+                        <li>项目描述：Global Game Jam 项目。oops 是一款 2D 平台闯关类游戏，玩家扮演气泡，通过分离和结合解密。</li>
+                    </ul>
+                    <a href="#" class="game-link">点击进入项目</a>
+                </div>
+                <!-- 游戏《共鸣步调：和弦咏叹 (Resonant Steps: Aria of the Chords)》 -->
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://files.gmhub.com/storage/upload/2025/02/3czhz8zWC29tZXo8XGIyRsJg7U6LVgTgbr1tNoPd.jpg.webp" alt="Game Project 3" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">游戏《共鸣步调：和弦咏叹 (Resonant Steps: Aria of the Chords)》</h3>
+                    <p>Unity 客户端开发 | <span class="date">2025 - 01 至 2025 - 01</span></p>
+                    <ul class="list-disc list-inside mb-2">
+                        <li>负责功能：负责游戏核心功能开发，开发 <strong>存档系统</strong>，撰写游戏策划文档 (游戏循环、交互设计、核心玩法)，管理项目开发进度周期</li>
+                        <li>项目描述：大学生游戏社团联盟第二届 "萌芽"GameJam 项目。主要玩法为 2D 横板解密 + 视觉小说，是一款紧张刺激的猫推箱子游戏。基于传统推箱子开发了多款新玩法，添加了一些交互细节，存档系统。</li>
+                    </ul>
+                    <a href="#" class="game-link">点击进入项目</a>
+                </div>
+                <!-- 游戏《睡吧猫猫 (Sleepy Cat)》 -->
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <img src="https://github.com/ifancy803/website-image/blob/main/SleepyCat.jpg?raw=true" alt="Game Project 4" class="w-full h-auto mb-2">
+                    <h3 class="text-xl font-bold mb-2">游戏《睡吧猫猫 (Sleepy Cat)》</h3>
+                    <p>Unity 客户端开发 | <span class="date">2024 - 11 至 2024 - 12</span></p>
+                    <ul class="list-disc list-inside mb-2">
+                        <li>负责功能：基于 <em>unity</em> 物理引擎开发核心玩法，负责了 <strong>UI 系统</strong>，场景逻辑。</li>
+                        <li>项目描述：吉比特高校游戏开发联盟 GameJam 项目。2D 横板冒险游戏，核心玩法为平台跳跃、解密、Boss 战，是各类小游戏的集合。包括了精美的像素画风和 boss 战设计。</li>
+                    </ul>
+                    <a href="#" class="game-link">点击进入项目</a>
+                </div>
+            </div>
+        </section>
+        <!-- 个人技能 -->
+        <section id="personal-skills" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">个人技能</h2>
+            <ul class="list-disc list-inside">
+                <li><strong>Unity3D</strong></li>
+                <li><strong>C#</strong></li>
+                <li><strong>Git</strong></li>
+                <li><strong>CET - 6</strong></li>
+                <li><strong>MS Office</strong></li>
+            </ul>
+        </section>
+        <!-- 联系我 -->
+        <section id="contact-me" class="custom-card">
+            <h2 class="text-3xl font-bold mb-4">联系我</h2>
+            <ul>
+                <li>微信：<strong>IFANCY_803</strong></li>
+                <li>QQ：<strong>2354587894</strong></li>
+                <li>手机号：<strong>18757330377</strong></li>
+                <li>邮箱：<strong>ifancy803@foxmail.com</strong></li>
+                <li>GitHub：<a href="https://github.com/ifancy803" class="game-link">https://github.com/ifancy803</a></li>
+            </ul>
+        </section>
+    </div>
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 py-4 text-center">
+        <p>&copy; 2025 IFANCY 个人作品集。保留所有权利。</p>
+    </footer>
+    <script>
+        // 轮播图脚本
+        const slides = document.getElementById('slides');
+        const sliderNav = document.getElementById('slider-nav');
+        let currentIndex = 0;
+        const slideCount = slides.children.length;
+        let autoSlideInterval;
+
+        // 创建导航按钮
+        for (let i = 0; i < slideCount; i++) {
+            const button = document.createElement('button');
+            if (i === 0) {
+                button.classList.add('active');
+            }
+            button.addEventListener('click', () => {
+                currentIndex = i;
+                updateSlide();
+                updateNavButtons();
+            });
+            sliderNav.appendChild(button);
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slideCount;
+            updateSlide();
+            updateNavButtons();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+            updateSlide();
+            updateNavButtons();
+        }
+
+        function updateSlide() {
+            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        function updateNavButtons() {
+            const buttons = sliderNav.querySelectorAll('button');
+            buttons.forEach((button, index) => {
+                if (index === currentIndex) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 3000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        startAutoSlide();
+
+        // 搜索功能
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const content = section.textContent.toLowerCase();
+                if (content.includes(searchTerm)) {
+                    section.style.display = 'block';
+                    section.style.opacity = 1;
+                    section.style.transform = 'translateY(0)';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+
+        // 平滑滚动到对应部分
+        const navLinks = document.querySelectorAll('nav ul li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 滚动动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('section');
+        sections.forEach((section) => {
+            observer.observe(section);
+        });
+
+        // 跳转网站顶部功能
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 粒子效果
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 3 + 1;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * window.innerWidth}px`;
+            particle.style.top = `${Math.random() * window.innerHeight}px`;
+            particle.style.setProperty('--x', `${(Math.random() - 0.5) * 200}px`);
+            particle.style.setProperty('--y', `${(Math.random() - 0.5) * 200}px`);
+            document.body.appendChild(particle);
+            setTimeout(() => {
+                particle.remove();
+            }, 3000);
+        }
+
+        setInterval(createParticle, 100);
+    </script>
+</body>
+
+</html>
+    
